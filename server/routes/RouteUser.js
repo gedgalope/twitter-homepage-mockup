@@ -15,22 +15,13 @@ router.get('/all', (req, res, next) => { //get all data from api
 });
 
 router.get('/:username', (req, res) => {
-
-  var query = { $text: { $search: req.params.username } };
-  console.log(query);
+  
+  var query = { $text: { $search: "\"" + req.params.username + "\"" }  };
   UserSchema.findOne(query, (err, userData) => {
     if (err) {
       throw err;
     } else {
-      console.log(userData);
-      if (userData == null) {
-        console.log('no such data');
-        res.json(null);
-      }
-      else {
-        console.log('found username');
-        res.json(userData);
-      }
+      res.json(userData);
     }
   });
 
@@ -40,20 +31,40 @@ router.post('/post', (req, res) => {
   console.log('Posting new user data');
   let newUserData = new UserSchema({
     name: req.body.name,
-    lastname: req.body.lastname,
     username: req.body.username,
     password: req.body.password,
+    userId: req.body,userId
   });
 
-    newUserData.save((err, newUser) => {
-      if (err) {
-        throw err;
-      } else {
-        console.log(req.body);
-        res.json(newUser);
-      }
-    })
+  newUserData.save((err, newUser) => {
+    if (err) {
+      throw err;
+    } else {
+      console.log(req.body);
+      res.json(newUser);
+    }
+  })
 
 });
+
+router.delete('/:id', (req, res) => {
+  // console.log('deleting ID: ' + _id);
+
+  UserSchema.deleteOne({ _id: req.params.id }, (err,result) => {
+    if(err){
+      throw(err);
+    }else{
+      res.json(result)
+    }
+  });
+
+
+})
+
+// router.delete('/:id',async(req, res)=>{
+//   const posts = await loadPostsCollection();
+//   await posts.deleteOne({_id: new mongodb.ObjectID(req.params.id)});
+//   res.status(200).send();
+// });
 
 module.exports = router;

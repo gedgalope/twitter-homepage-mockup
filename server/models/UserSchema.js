@@ -7,20 +7,21 @@ const UserCredentials = mongoose.Schema({
         type: String,
         required: true
     },
-    lastname:{
-        type:String,
-        required:true
-    },
     username:{
         type:String,
         required:true
     },
     password:{
         type:String,
-        required:true
+        required:false
     },
-});
-UserCredentials.index({name:'text',lastname:'text',username:'text'});
+    userId:{
+        type:String,
+        required:true
+    }
+},{ versionKey: false }
+);
+UserCredentials.index({name:'text',username:'text',password:'text', userId:'text'});
 
 const UserSchema = module.exports = mongoose.model('UserSchema',UserCredentials);
 

@@ -10,6 +10,7 @@
   "dependencies": {
     "@mdi/font": "^3.5.95",
     "axios": "^0.18.0",
+    "firebase": "^5.8.5",
     "vue": "^2.5.22",
     "vue-router": "^3.0.1",
     "vuetify": "^1.3.0",
