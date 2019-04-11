@@ -60,6 +60,13 @@ export default {
       show: false,
     };
   },
+  watch: {
+    loginStatus: function (){
+      if(this.loginStatus){
+        this.$router.push({name:'home'})
+      }
+    }
+  },
   components:{
     "sign-up":Signup,
     "button-fb": ButtonFB,
@@ -68,7 +75,8 @@ export default {
   },
   computed: {
     ...mapState({
-      userCredentials: state =>  state.UserData.userCredentials
+      userCredentials: state =>  state.UserData.userCredentials,
+      loginStatus: state => state.UserData.loggedIn
     }),
     
   },

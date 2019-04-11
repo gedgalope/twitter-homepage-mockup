@@ -37,30 +37,29 @@ router.post('/post', (req, res) => {
     userId: req.body.userId
   });
 
-  console.log('checking for duplicate userID')
   var query = { $text: { $search: "\"" + newUserData.userId + "\"" } };
-  var duplicateUser = UserSchema.aggregate([{$match:{userId:newUserData.userId}}], (err,result)=>{
-    if(err){
+  console.log('checking for duplicate userID: ' + newUserData.userId)
+  UserSchema.findOne({ "userId": newUserData.userId }, (err, result) => {
+    if (err) {
       throw err;
-    }else{
-      console.log('result' + result);
-      return result;
+    } else {
+      console.log('result: ' + result);
+      // res.json(result);
+      if (result != null) {
+        console.log('duplicate user');
+        res.json(newUserData)
+      } else {
+      newUserData.save((err, newUser) => {
+        if (err) {
+          throw err;
+        } else {
+          console.log(req.body);
+          res.json(newUser);
+        }
+      })
+      }
     }
   });
-  console.log(duplicateUser)
-  if (duplicateUser) {
-    console.log('duplicate user')
-  } else {
-    newUserData.save((err, newUser) => {
-      if (err) {
-        throw err;
-      } else {
-        console.log(req.body);
-        res.json(newUser);
-      }
-    })
-  }
-
 });
 
 router.delete('/:id', (req, res) => {

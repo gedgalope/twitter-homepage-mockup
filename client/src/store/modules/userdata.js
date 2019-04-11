@@ -12,7 +12,8 @@ const AXIOS = axios.create(axiosConfig);
 const state = {
   userCredentials: {},
   newCredentials: {},
-  foundCred: true
+  foundCred: true,
+  loggedIn:false
 }
 
 const getters = {
@@ -29,8 +30,8 @@ const mutations = {
       state.userCredentials = payload.data
     }
   },
-  POST_NEW_DATA(state, payloadObj) {
-    state.newCredentials.push(payloadObj)
+  CHANGE_LOGIN_STATE(state){
+    state.loggedIn=!state.loggedIn;
   }
 }
 
@@ -72,13 +73,13 @@ const actions = {
       var user = {
         name: credentials.displayName,
         username: credentials.email,
-        password: null,
+        password: credentials.password,
         userId: credentials.uid
       }
       console.log(JSON.stringify(user));
       await AXIOS.post('/post', user);
-      commit('POST_NEW_DATA', user);
-
+      commit('SET_USER_CREDENTIALS', user);
+      commit('CHANGE_LOGIN_STATE');
       // commit('POST_NEW_DATA', newUser);
     } catch (error) {
       return error;
@@ -157,12 +158,10 @@ function firebaseLoginUser(credentials) {
     firebase.auth().signInWithEmailAndPassword(
       credentials.username,credentials.password
     ).then( (res)=>{
-      alert('welcome user: ' + res.user);
+      return res;
     }).catch( (err)=>{
       throw(err.message)
     });
-  
-
 }
 export default {
   state,
