@@ -1,13 +1,15 @@
+/* eslint-disable*/
 
-const axios = require('axios');
+// const axios = require('axios');
+import user from '../../api/user'
 const firebase = require('firebase');
 
 
-const axiosConfig = {
-  baseURL: 'http://localhost:3000',
-};
+// const axiosConfig = {
+//   baseURL: 'http://localhost:3000',
+// };
 
-const AXIOS = axios.create(axiosConfig);
+// const AXIOS = axios.create(axiosConfig);
 
 const state = {
   userCredentials: {},
@@ -48,11 +50,9 @@ const actions = {
     // async getData({ commit }) {
 
     try {
-      const data = await AXIOS.get(userCredentials.username);
+      const data = await user.getUser(userCredentials.username);
       // const data = await HTTP.get('/all');
-      /* eslint-disable no-console */
       console.log(userCredentials.username);
-      /* eslint-enable no-console */
       firebaseLoginUser(userCredentials)
       commit('SET_USER_CREDENTIALS', data);
     } catch (error) {
@@ -61,24 +61,20 @@ const actions = {
   },
 
   async postData({ commit }, dataObj) {
-    /* eslint-disable no-console */
     console.log(dataObj);
-    /* eslint-enable no-console */
     try {
-      /* eslint-disable no-console */
-      // console.log(JSON.stringify(dataObj));
+      console.log(JSON.stringify(dataObj));
       
-      let promise = await firebaseCreateUser(dataObj);
-      var credentials = await promise
-      var user = {
+      let credentials = await firebaseCreateUser(dataObj);
+      var newUser = {
         name: credentials.displayName,
         username: credentials.email,
         password: credentials.password,
         userId: credentials.uid
       }
-      console.log(JSON.stringify(user));
-      await AXIOS.post('/post', user);
-      commit('SET_USER_CREDENTIALS', user);
+      console.log('user'+JSON.stringify(newUser));
+      await user.addUser(newUser);
+      commit('SET_USER_CREDENTIALS', newUser);
       commit('CHANGE_LOGIN_STATE');
       // commit('POST_NEW_DATA', newUser);
     } catch (error) {
@@ -89,7 +85,6 @@ const actions = {
 
 async function firebaseCreateUser(credentials) {
   if (credentials.method == "facebook") {
-    /* eslint-disable*/
     console.log('facebook auth');
     var provider = await new firebase.auth.FacebookAuthProvider();
     var userdata = await firebase.auth().signInWithPopup(provider).then( function(result) {
@@ -115,19 +110,14 @@ async function firebaseCreateUser(credentials) {
   }
   else if (credentials.method == "google") {
     var provider = await new firebase.auth.GoogleAuthProvider();
-    /* eslint-disable no-console */
     console.log('provider' + provider)
     var userdata = await firebase.auth().signInWithPopup(provider).then(
     function (res) {
-        /* eslint-disable no-console */
         console.log('google login success');
-        /* eslint-enable no-console */
         return res.user
       }
     ).catch((err) => {
-      /* eslint-disable no-console */
       console.log('success ' + err.message);
-      /* eslint-enable no-console */
       throw error.message;
     });
     return userdata;
@@ -137,16 +127,12 @@ async function firebaseCreateUser(credentials) {
       credentials.username, credentials.password
     ).then(
       (res) => {
-        /* eslint-disable no-console */
         console.log('success ' + res.user);
-        /* eslint-enable no-console */
         return res.user
       }
     ).catch(
       (err) =>{
-        /* eslint-disable no-console */
         console.log(err.message);
-        /* eslint-enable no-console */
         throw error.message;
       });
       return userdata
@@ -164,6 +150,7 @@ function firebaseLoginUser(credentials) {
     });
 }
 export default {
+  namespaced:true,
   state,
   getters,
   mutations,

@@ -1,7 +1,7 @@
 <template>
   <div class="NewPost">
     <v-card color="">
-      <v-form>
+      <v-form ref="form">
         <v-card-actions>
           <v-layout column>
             <v-flex>
@@ -29,7 +29,7 @@
                   </v-btn>
                 </v-flex>
                 <v-flex grow>
-                  <v-btn color="#26A69A" :disabled="disable()" round @click="postText()">Bark!</v-btn>
+                  <v-btn color="#26A69A" :disabled="disable()" round @click="submmitPost()">Bark!</v-btn>
                 </v-flex>
               </v-layout>
               <!-- </v-container> -->
@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import {mapState, mapActions} from 'vuex'
 export default {
   name: "NewPost",
   data() {
@@ -49,7 +50,17 @@ export default {
       postText: ""
     };
   },
+  computed: {
+    ...mapState({
+      userCred:state=>state.UserData.userCredentials
+    })
+  },
   methods: {
+      /*eslint-disable*/
+
+    ...mapActions({
+      submmitNewPost:'userProfileFeed/newPost'
+    }),
     disable() {
       if (this.postText.length >= 140) {
         return true;
@@ -57,13 +68,19 @@ export default {
         return false;
       }
     },
-    postText(){
-      
+    submmitPost(){
+      console.log(this.postText);
+      this.submmitNewPost({
+        text:this.postText,
+        userId:this.userCred.userId
+      });
+      this.postText="";
+      // this.$refs.form.reset();
     },
     uploadGIF(){
 
     },
-    uploadaImage(){
+    uploadImage(){
 
     }
   }

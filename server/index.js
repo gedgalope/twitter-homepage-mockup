@@ -24,6 +24,8 @@ app.use(cors());
 
 const UserSchema = require('./routes/RouteUser');
 app.use(UserSchema);
+PostSchema = require('./routes/RoutePost');
+app.use(PostSchema);
 
 app.get('/', (req, res) => res.send('Hello World'));
 app.listen(port, () => console.log('listening to port ' + port));

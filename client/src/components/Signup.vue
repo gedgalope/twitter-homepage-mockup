@@ -104,10 +104,10 @@ export default {
   },
   methods: {
     ...mapMutations({
-      close: "dialogState"
+      close: "storeMisc/dialogState"
     }),
     ...mapActions({
-      SIGN_UP: "postData"
+      SIGN_UP: "UserData/postData"
     }),
     createAccount() {
       var array = Object.values(this.newUser);

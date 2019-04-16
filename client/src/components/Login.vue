@@ -82,11 +82,11 @@ export default {
   },
   methods: {
     ...mapMutations({
-      goSignup : 'dialogState',
+      goSignup : 'storeMisc/dialogState',
     }),
     ...mapActions({
-      loadCredentials: 'getData',
-      socialMedAuth: "postData"
+      loadCredentials: 'UserData/getData',
+      socialMedAuth: "UserData/postData"
     }),
     login(){
       alert("username: " + this.signInCredentials.username + "\n" +"password: " + this.signInCredentials.password);
